@@ -7,43 +7,124 @@ import {
   TouchableOpacity,
   View
 } from "react-native";
-import { WebBrowser } from "expo";
+import { Camera } from "expo";
+import Spinner from "react-native-spinkit";
 
-import { MonoText } from "../components/StyledText";
+// Where the Google Cloud API key is
+import config from "../assets/config.json";
 
 export default class CameraScreen extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      loading: false
+    };
+    this.takePicture = this.takePicture.bind(this);
+  }
+
   static navigationOptions = {
     title: "Camera"
   };
 
   render() {
+    // Confirm startup and API key readiness
+    console.log("Starting app");
+    console.log("Google config is:\n", config, "\n##################\n");
+
     return (
       <View style={styles.container}>
-        <View style={styles.welcomeContainer}>
-          <Image
-            source={
-              __DEV__
-                ? require("../assets/images/robot-dev.png")
-                : require("../assets/images/robot-prod.png")
-            }
-            style={styles.welcomeImage}
-          />
-        </View>
+        <Camera
+          ref={cam => {
+            this.camera = cam;
+          }}
+          style={styles.preview}
+          aspect={Camera.constants.Aspect.fill}
+          playSoundOnCapture={false}
+        >
+          {/* Write  */}
+          <View>
+            <Text>{this.state.loading}</Text>
+          </View>
 
-        <View style={styles.getStartedContainer}>
-          <Text style={styles.bigProjectText}>
-            Building with Expo camera from scratch.
-          </Text>
-        </View>
+          {!this.state.loading ? (
+            <Text style={styles.capture} onPress={this.takePicture} />
+          ) : (
+            <View>
+              <Spinner
+                style={styles.spinner}
+                isVisible={true}
+                size={70}
+                type={"Bounce"}
+                color={"white"}
+              />
+            </View>
+          )}
+        </Camera>
       </View>
     );
+  }
+
+  takePicture() {
+    if (!this.state.loading) {
+      this.setState({
+        loading: true
+      });
+
+      const options = {};
+      this.camera
+        .capture({ metadata: options })
+        .then(data => {
+          resizeImage(data.path, resizedImageUri => {
+            NativeModules.RNImageToBase64.getBase64String(
+              resizedImageUri,
+              async (err, base64) => {
+                // Do something with the base64 string
+                if (err) {
+                  console.error(err);
+                }
+                console.log("converted to base64");
+                // ToastAndroid.show('converted to base64', ToastAndroid.SHORT);
+
+                let result = await checkForLabels(base64);
+                console.log(result);
+                // ToastAndroid.show(JSON.stringify(result), ToastAndroid.SHORT);
+
+                //custom filter
+                let filteredResult = filterLabelsList(result.responses[0], 0.3);
+                displayResult(filteredResult);
+
+                this.setState({
+                  loading: false
+                });
+              }
+            );
+          });
+        })
+        .catch(err => console.error(err));
+    } else {
+      console.log("NO GO" + this.state.loading);
+    }
   }
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff"
+    flexDirection: "row"
+  },
+  capture: {
+    flex: 0,
+    backgroundColor: "#fff",
+    borderRadius: 50,
+    padding: 10,
+    margin: 50,
+    height: 70,
+    width: 70,
+    borderColor: "rgba(0, 0, 0, 0.3)",
+    borderWidth: 15
+  },
+  spinner: {
+    marginBottom: 50
   },
   developmentModeText: {
     marginBottom: 20,
