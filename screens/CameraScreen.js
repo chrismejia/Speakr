@@ -69,9 +69,6 @@ export default class CameraScreen extends React.Component {
     whiteBalance: "auto",
     ratio: "16:9",
     ratios: [],
-    barcodeScanning: false,
-    faceDetecting: false,
-    faces: [],
     newPhotos: false,
     permissionsGranted: false,
     pictureSize: undefined,
@@ -150,20 +147,6 @@ export default class CameraScreen extends React.Component {
       depth
     });
 
-  toggleBarcodeScanning = () =>
-    this.setState({
-      barcodeScanning: !this.state.barcodeScanning
-    });
-
-  toggleFaceDetection = () => {
-    this.setState({
-      faceDetecting: !this.state.faceDetecting
-    });
-    {
-      console.log(this.state.faces);
-    }
-  };
-
   takePicture = () => {
     if (this.camera) {
       this.camera.takePictureAsync({
@@ -182,18 +165,6 @@ export default class CameraScreen extends React.Component {
     console.log(photo);
     this.setState({ newPhotos: true });
   };
-
-  onBarCodeScanned = code => {
-    this.setState(
-      { barcodeScanning: !this.state.barcodeScanning },
-      Alert.alert(`Barcode found: ${code.data}`)
-    );
-  };
-
-  onFacesDetected = ({ faces }) => {
-    this.setState({ faces });
-  };
-  onFaceDetectionError = state => console.warn("Faces detection error:", state);
 
   collectPictureSizes = async () => {
     if (this.camera) {
@@ -291,19 +262,19 @@ export default class CameraScreen extends React.Component {
         style={styles.bottomButton}
         onPress={this.toggleMoreOptions}
       >
-        <Octicons name="kebab-horizontal" size={30} color="white" />
+        <MaterialIcons name="photo-size-select-large" size={40} color="white" />
       </TouchableOpacity>
       <View style={{ flex: 0.4 }}>
         <TouchableOpacity
           onPress={this.takePicture}
           style={{ alignSelf: "center" }}
         >
-          <Ionicons name="ios-radio-button-on" size={70} color="white" />
+          <Ionicons name="ios-radio-button-on" size={85} color="white" />
         </TouchableOpacity>
       </View>
       <TouchableOpacity style={styles.bottomButton} onPress={this.toggleView}>
         <View>
-          <Foundation name="thumbnails" size={30} color="white" />
+          <Ionicons name="md-images" size={40} color="white" />
           {this.state.newPhotos && <View style={styles.newPhotosDot} />}
         </View>
       </TouchableOpacity>
@@ -312,40 +283,23 @@ export default class CameraScreen extends React.Component {
 
   renderMoreOptions = () => (
     <View style={styles.options}>
-      <View style={styles.detectors}>
-        <TouchableOpacity onPress={this.toggleFaceDetection}>
-          <MaterialIcons
-            name="tag-faces"
-            size={32}
-            color={this.state.faceDetecting ? "white" : "#858585"}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={this.toggleBarcodeScanning}>
-          <MaterialCommunityIcons
-            name="barcode-scan"
-            size={32}
-            color={this.state.barcodeScanning ? "white" : "#858585"}
-          />
-        </TouchableOpacity>
-      </View>
-
       <View style={styles.pictureSizeContainer}>
-        <Text style={styles.pictureQualityLabel}>Picture quality</Text>
+        <Text style={styles.pictureQualityLabel}>Resolution</Text>
         <View style={styles.pictureSizeChooser}>
           <TouchableOpacity
             onPress={this.previousPictureSize}
-            style={{ padding: 6 }}
+            style={{ paddingLeft: 6, paddingRight: 6 }}
           >
-            <Ionicons name="md-arrow-dropleft" size={14} color="white" />
+            <Ionicons name="md-arrow-dropleft" size={24} color="white" />
           </TouchableOpacity>
           <View style={styles.pictureSizeLabel}>
             <Text style={{ color: "white" }}>{this.state.pictureSize}</Text>
           </View>
           <TouchableOpacity
             onPress={this.nextPictureSize}
-            style={{ padding: 6 }}
+            style={{ paddingLeft: 6, paddingRight: 6 }}
           >
-            <Ionicons name="md-arrow-dropright" size={14} color="white" />
+            <Ionicons name="md-arrow-dropright" size={24} color="white" />
           </TouchableOpacity>
         </View>
       </View>
@@ -421,7 +375,7 @@ const styles = StyleSheet.create({
   bottomBar: {
     paddingBottom: 5,
     backgroundColor: "transparent",
-    alignSelf: "flex-end",
+    alignSelf: "center",
     justifyContent: "space-between",
     flex: 0.12,
     flexDirection: "row"
@@ -453,7 +407,6 @@ const styles = StyleSheet.create({
   },
   bottomButton: {
     flex: 0.3,
-    height: 58,
     justifyContent: "center",
     alignItems: "center"
   },
@@ -461,36 +414,33 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 0,
     right: -5,
-    width: 8,
-    height: 8,
+    width: 16,
+    height: 16,
     borderRadius: 4,
-    backgroundColor: "#4630EB"
+    backgroundColor: "springgreen"
   },
   options: {
+    flex: 1,
     position: "absolute",
-    bottom: 80,
-    left: 30,
-    width: 200,
-    height: 160,
+    bottom: 100,
+    left: 15,
+    width: 150,
+    height: 80,
     backgroundColor: "#000000BA",
-    borderRadius: 4,
+    borderRadius: 10,
     padding: 10
   },
-  detectors: {
-    flex: 0.5,
-    justifyContent: "space-around",
-    alignItems: "center",
+  pictureQualityLabel: {
+    flex: 1,
+    fontSize: 16,
+    color: "white",
     flexDirection: "row"
   },
-  pictureQualityLabel: {
-    fontSize: 10,
-    marginVertical: 3,
-    color: "white"
-  },
   pictureSizeContainer: {
-    flex: 0.5,
+    flex: 1,
     alignItems: "center",
-    paddingTop: 10
+    justifyContent: "center",
+    flexDirection: "row"
   },
   pictureSizeChooser: {
     alignItems: "center",
@@ -501,35 +451,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center"
-  },
-  facesContainer: {
-    position: "absolute",
-    bottom: 0,
-    right: 0,
-    left: 0,
-    top: 0
-  },
-  face: {
-    padding: 10,
-    borderWidth: 2,
-    borderRadius: 2,
-    position: "absolute",
-    borderColor: "#FFD700",
-    justifyContent: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.5)"
-  },
-  landmark: {
-    width: landmarkSize,
-    height: landmarkSize,
-    position: "absolute",
-    backgroundColor: "red"
-  },
-  faceText: {
-    color: "#FFD700",
-    fontWeight: "bold",
-    textAlign: "center",
-    margin: 10,
-    backgroundColor: "transparent"
   },
   row: {
     flexDirection: "row"
