@@ -85,7 +85,6 @@ export default class GalleryScreen extends React.Component {
         <ScrollView contentComponentStyle={{ flex: 1 }}>
           <View style={styles.pictures}>
             {this.state.photos.map(this.renderPhoto)}
-            <Text>this.renderPhoto() would be doing its thing here</Text>
           </View>
         </ScrollView>
       </View>
