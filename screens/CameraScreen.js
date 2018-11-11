@@ -15,7 +15,7 @@ import {
   Slider,
   Platform
 } from "react-native";
-// // import GalleryScreen from "./GalleryScreen";
+import GalleryScreen from "./GalleryScreen";
 // import isIPhoneX from "react-native-is-iphonex";
 
 import {
@@ -207,9 +207,9 @@ export default class CameraScreen extends React.Component {
     });
   };
 
-  // renderGallery() {
-  //   // return <GalleryScreen onPress={this.toggleView.bind(this)} />;
-  // }
+  renderGallery() {
+    return <GalleryScreen onPress={this.toggleView.bind(this)} />;
+  }
 
   renderFace({ bounds, faceID, rollAngle, yawAngle }) {
     function getStat() {
@@ -442,7 +442,7 @@ export default class CameraScreen extends React.Component {
       ? this.renderCamera()
       : this.renderNoPermissions();
     const content = this.state.showGallery
-      ? console.log("this.renderGallery() would run here")
+      ? this.renderGallery()
       : cameraScreenContent;
     return <View style={styles.container}>{content}</View>;
   }
