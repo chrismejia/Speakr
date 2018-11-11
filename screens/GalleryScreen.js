@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { FileSystem, FaceDetector, MediaLibrary, Permissions } from "expo";
 import { MaterialIcons } from "@expo/vector-icons";
-// import Photo from "./Photo";
+import Photo from "../components/Photo";
 
 const PHOTOS_DIR = FileSystem.documentDirectory + "photos";
 
@@ -19,6 +19,10 @@ export default class GalleryScreen extends React.Component {
     images: {},
     photos: [],
     selected: []
+  };
+
+  static navigationOptions = {
+    title: "Gallery"
   };
 
   componentDidMount = async () => {
@@ -58,14 +62,14 @@ export default class GalleryScreen extends React.Component {
     }
   };
 
-  // renderPhoto = fileName => (
-  //   <Photo
-  //     photos={this.state.photos}
-  //     key={fileName}
-  //     uri={`${PHOTOS_DIR}/${fileName}`}
-  //     onSelectionToggle={this.toggleSelection}
-  //   />
-  // );
+  renderPhoto = fileName => (
+    <Photo
+      photos={this.state.photos}
+      key={fileName}
+      uri={`${PHOTOS_DIR}/${fileName}`}
+      onSelectionToggle={this.toggleSelection}
+    />
+  );
 
   render() {
     return (
@@ -80,7 +84,7 @@ export default class GalleryScreen extends React.Component {
         </View>
         <ScrollView contentComponentStyle={{ flex: 1 }}>
           <View style={styles.pictures}>
-            {/* {this.state.photos.map(this.renderPhoto)} */}
+            {this.state.photos.map(this.renderPhoto)}
             <Text>this.renderPhoto() would be doing its thing here</Text>
           </View>
         </ScrollView>
