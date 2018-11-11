@@ -1,6 +1,7 @@
 import React from "react";
 import { Image, StyleSheet, View, TouchableOpacity, Text } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import Layout from "../constants/Layout";
 
 const pictureSize = 150;
 
@@ -14,7 +15,7 @@ export default class Photo extends React.Component {
   _mounted = false;
 
   componentDidMount() {
-    imageInfo.push("hello");
+    imageInfo.push("image");
     console.log(this.state.image);
     console.log(imageInfo);
     this._mounted = true;
@@ -69,7 +70,11 @@ export default class Photo extends React.Component {
       >
         <Image style={styles.picture} source={{ uri }} />
         {this.state.selected && (
-          <Ionicons name="md-checkmark-circle" size={30} color="#4630EB" />
+          <MaterialCommunityIcons
+            name="plus-circle"
+            size={50}
+            color="springgreen"
+          />
         )}
       </TouchableOpacity>
     );

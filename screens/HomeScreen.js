@@ -27,16 +27,19 @@ export default class HomeScreen extends React.Component {
 ██║     ╚██████╔╝██║ ╚████║   ██║
 ╚═╝      ╚═════╝ ╚═╝  ╚═══╝   ╚═╝
   */
-  // async componentDidMount() {
-  //   try {
-  //     const font = await Font.loadAsync({
-  //       "Cheetah Kick": require("../assets/fonts/CheetahKick.otf")
-  //     });
-  //     console.log(font);
-  //     this.setState({ fontLoaded: true });
-  //   } catch (e) {
-  //     console.log(e);
-  //   }
+  // componentDidMount() {
+  //   (async () => {
+  //     try {
+  //       console.log("Loading font...");
+  //       await Font.loadAsync({
+  //         "Cheetah Kick": require("../assets/fonts/CheetahKick.otf")
+  //       });
+  //       console.log("Font loaded.");
+  //       this.setState({ fontLoaded: true });
+  //     } catch (e) {
+  //       console.log(e);
+  //     }
+  //   })();
   // }
 
   render() {
@@ -66,14 +69,15 @@ export default class HomeScreen extends React.Component {
 ██╔══╝  ██║   ██║██║╚██╗██║   ██║
 ██║     ╚██████╔╝██║ ╚████║   ██║
 ╚═╝      ╚═════╝ ╚═╝  ╚═══╝   ╚═╝
+ */}
 
-            {this.state.fontLoaded ? (
+            {/*this.state.fontLoaded ? (
               <Text style={{ fontFamily: "Cheetah Kick", fontSize: 56 }}>
                 Speakr
               </Text>
             ) : (
               <Text>Font not loaded</Text>
-            )} */}
+            )*/}
           </View>
           <View style={styles.getStartedContainer}>
             {this._maybeRenderDevelopmentModeWarning()}

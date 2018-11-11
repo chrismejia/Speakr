@@ -5,9 +5,16 @@ import {
   View,
   TouchableOpacity,
   Text,
-  ScrollView
+  ScrollView,
+  Alert
 } from "react-native";
-import { FileSystem, FaceDetector, MediaLibrary, Permissions } from "expo";
+import {
+  FileSystem,
+  FaceDetector,
+  MediaLibrary,
+  Permissions,
+  ImageManipulator
+} from "expo";
 import { MaterialIcons } from "@expo/vector-icons";
 import Photo from "../components/Photo";
 
@@ -40,21 +47,34 @@ export default class GalleryScreen extends React.Component {
   saveToGallery = async () => {
     const photos = this.state.selected;
 
+    // Whenever there are photos selected...
     if (photos.length > 0) {
       const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
 
       if (status !== "granted") {
         throw new Error("Denied CAMERA_ROLL permissions!");
       }
+      console.log("This is photos:");
+      console.log(photos);
 
       const promises = photos.map(photoUri => {
+        ImageManipulator.manipulate(photoUri, []);
         return MediaLibrary.createAssetAsync(photoUri);
       });
 
+      const numOfPhotos = promises.length;
+
       await Promise.all(promises);
-      alert("Successfully saved photos to user's gallery!");
+      alert(
+        numOfPhotos > 1
+          ? `${numOfPhotos} photos saved to your gallery!`
+          : `${numOfPhotos} photo saved to your gallery!`
+      );
     } else {
-      alert("No photos to save!");
+      alert(
+        "No Photos Selected",
+        "Please tap to select the photo(s) you'd like to save locally to your device."
+      );
     }
   };
 
@@ -72,10 +92,13 @@ export default class GalleryScreen extends React.Component {
       <View style={styles.container}>
         <View style={styles.navbar}>
           <TouchableOpacity style={styles.button} onPress={this.props.onPress}>
-            <MaterialIcons name="arrow-back" size={25} color="white" />
+            <MaterialIcons name="arrow-back" size={30} color="black" />
           </TouchableOpacity>
           <TouchableOpacity style={styles.button} onPress={this.saveToGallery}>
-            <Text style={styles.whiteText}>Save selected to gallery</Text>
+            <Text style={styles.gallerySave}>
+              {/* <MaterialIcons name="save" size={30} color="black" /> */}
+              Process & Save
+            </Text>
           </TouchableOpacity>
         </View>
         <ScrollView contentComponentStyle={{ flex: 1 }}>
@@ -91,26 +114,27 @@ export default class GalleryScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 20,
+    paddingTop: 28,
     backgroundColor: "white"
   },
   navbar: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    backgroundColor: "#4630EB"
+    backgroundColor: "springgreen"
   },
   pictures: {
     flex: 1,
     flexWrap: "wrap",
     flexDirection: "row",
-    justifyContent: "space-around",
     paddingVertical: 8
   },
   button: {
     padding: 20
   },
-  whiteText: {
-    color: "white"
+  gallerySave: {
+    alignItems: "center",
+    fontSize: 20,
+    color: "black"
   }
 });
