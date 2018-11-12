@@ -41,7 +41,7 @@ LearningStack.navigationOptions = {
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}
-      name={Platform.OS === "ios" ? `ios-book` : "md-book"}
+      name={Platform.OS === "ios" ? `ios-list-box` : "md-list-box"}
     />
   )
 };
@@ -51,11 +51,11 @@ const StudyStack = createStackNavigator({
 });
 
 StudyStack.navigationOptions = {
-  tabBarLabel: "Settings",
+  tabBarLabel: "Study",
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}
-      name={Platform.OS === "ios" ? "ios-options" : "md-options"}
+      name={Platform.OS === "ios" ? `ios-book` : "md-book"}
     />
   )
 };

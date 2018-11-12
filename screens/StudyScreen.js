@@ -1,5 +1,5 @@
 import React from "react";
-import { ScrollView, StyleSheet, Text } from "react-native";
+import { ScrollView, StyleSheet, Text, Image } from "react-native";
 
 export default class StudyScreen extends React.Component {
   static navigationOptions = {
@@ -10,6 +10,10 @@ export default class StudyScreen extends React.Component {
     return (
       <ScrollView style={styles.container}>
         <Text>Placeholder for Study/Export Screen</Text>
+        <Image
+          source={{ uri: "https://i.stack.imgur.com/eiz1c.jpg" }}
+          style={{ width: 500, height: 3171, resizeMode: "contain" }}
+        />
       </ScrollView>
     );
   }

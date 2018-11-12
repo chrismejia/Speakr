@@ -1,257 +1,84 @@
 import React from "react";
-import {
-  Font,
-  Image,
-  Platform,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View
-} from "react-native";
-import { WebBrowser } from "expo";
+import { StyleSheet, Text, View, Image, Button } from "react-native";
+import { Google } from "expo";
+import config from "../config.json";
 
-import { MonoText } from "../components/StyledText";
+export default class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      signedIn: false,
+      name: "",
+      photoUrl: ""
+    };
+  }
+  signIn = async () => {
+    try {
+      const result = await Google.logInAsync({
+        androidClientId: config.googleOAuth,
+        scopes: ["profile", "email"]
+      });
 
-export default class HomeScreen extends React.Component {
-  state = { fontLoaded: false };
-
-  static navigationOptions = { header: null };
-
-  // To reattempt later
-  /*
-███████╗ ██████╗ ███╗   ██╗████████╗
-██╔════╝██╔═══██╗████╗  ██║╚══██╔══╝
-█████╗  ██║   ██║██╔██╗ ██║   ██║
-██╔══╝  ██║   ██║██║╚██╗██║   ██║
-██║     ╚██████╔╝██║ ╚████║   ██║
-╚═╝      ╚═════╝ ╚═╝  ╚═══╝   ╚═╝
-  */
-  // componentDidMount() {
-  //   (async () => {
-  //     try {
-  //       console.log("Loading font...");
-  //       await Font.loadAsync({
-  //         "Cheetah Kick": require("../assets/fonts/CheetahKick.otf")
-  //       });
-  //       console.log("Font loaded.");
-  //       this.setState({ fontLoaded: true });
-  //     } catch (e) {
-  //       console.log(e);
-  //     }
-  //   })();
-  // }
-
+      if (result.type === "success") {
+        this.setState({
+          signedIn: true,
+          name: result.user.name,
+          photoUrl: result.user.photoUrl
+        });
+      } else {
+        console.log("cancelled");
+      }
+    } catch (e) {
+      console.log("error", e);
+    }
+  };
   render() {
     return (
       <View style={styles.container}>
-        <ScrollView
-          style={styles.container}
-          contentContainerStyle={styles.contentContainer}
-        >
-          <View style={styles.welcomeContainer}>
-            <Image
-              source={
-                __DEV__
-                  ? require("../assets/images/robot-dev.png")
-                  : require("../assets/images/robot-prod.png")
-              }
-              style={styles.welcomeImage}
-            />
-          </View>
-          <View>
-            <Text>Speakr</Text>
-
-            {/*
-███████╗ ██████╗ ███╗   ██╗████████╗
-██╔════╝██╔═══██╗████╗  ██║╚══██╔══╝
-█████╗  ██║   ██║██╔██╗ ██║   ██║
-██╔══╝  ██║   ██║██║╚██╗██║   ██║
-██║     ╚██████╔╝██║ ╚████║   ██║
-╚═╝      ╚═════╝ ╚═╝  ╚═══╝   ╚═╝
- */}
-
-            {/*this.state.fontLoaded ? (
-              <Text style={{ fontFamily: "Cheetah Kick", fontSize: 56 }}>
-                Speakr
-              </Text>
-            ) : (
-              <Text>Font not loaded</Text>
-            )*/}
-          </View>
-          <View style={styles.getStartedContainer}>
-            {this._maybeRenderDevelopmentModeWarning()}
-
-            <Text style={styles.getStartedText}>Get started by opening</Text>
-
-            <View
-              style={[styles.codeHighlightContainer, styles.homeScreenFilename]}
-            >
-              <MonoText style={styles.codeHighlightText}>
-                screens/HomeScreen.js
-              </MonoText>
-            </View>
-
-            <Text style={styles.getStartedText}>
-              Change this text and your app will automatically reload.
-            </Text>
-          </View>
-
-          <View style={styles.helpContainer}>
-            <TouchableOpacity
-              onPress={this._handleHelpPress}
-              style={styles.helpLink}
-            >
-              <Text style={styles.helpLinkText}>
-                Help, it didn’t automatically reload!
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </ScrollView>
-
-        <View style={styles.tabBarInfoContainer}>
-          <Text style={styles.tabBarInfoText}>
-            This is a tab bar. You can edit it in:
-          </Text>
-
-          <View
-            style={[styles.codeHighlightContainer, styles.navigationFilename]}
-          >
-            <MonoText style={styles.codeHighlightText}>
-              navigation/MainTabNavigator.js
-            </MonoText>
-          </View>
-        </View>
+        {this.state.signedIn ? (
+          <LoggedInPage name={this.state.name} photoUrl={this.state.photoUrl} />
+        ) : (
+          <LoginPage signIn={this.signIn} />
+        )}
       </View>
     );
   }
-
-  _maybeRenderDevelopmentModeWarning() {
-    if (__DEV__) {
-      const learnMoreButton = (
-        <Text onPress={this._handleLearnMorePress} style={styles.helpLinkText}>
-          Learn more
-        </Text>
-      );
-
-      return (
-        <Text style={styles.developmentModeText}>
-          Development mode is enabled, your app will be slower but you can use
-          useful development tools. {learnMoreButton}
-        </Text>
-      );
-    } else {
-      return (
-        <Text style={styles.developmentModeText}>
-          You are not in development mode, your app will run at full speed.
-        </Text>
-      );
-    }
-  }
-
-  _handleLearnMorePress = () => {
-    WebBrowser.openBrowserAsync(
-      "https://docs.expo.io/versions/latest/guides/development-mode"
-    );
-  };
-
-  _handleHelpPress = () => {
-    WebBrowser.openBrowserAsync(
-      "https://docs.expo.io/versions/latest/guides/up-and-running.html#can-t-see-your-changes"
-    );
-  };
 }
+
+const LoginPage = props => {
+  return (
+    <View>
+      <Text style={styles.header}>Sign In With Google</Text>
+      <Button title="Sign in with Google" onPress={() => props.signIn()} />
+    </View>
+  );
+};
+
+const LoggedInPage = props => {
+  return (
+    <View style={styles.container}>
+      <Text style={styles.header}>Welcome:{props.name}</Text>
+      <Image style={styles.image} source={{ uri: props.photoUrl }} />
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff"
-  },
-  developmentModeText: {
-    marginBottom: 20,
-    color: "rgba(0,0,0,0.4)",
-    fontSize: 14,
-    lineHeight: 19,
-    textAlign: "center"
-  },
-  contentContainer: {
-    paddingTop: 30
-  },
-  welcomeContainer: {
+    backgroundColor: "#fff",
     alignItems: "center",
-    marginTop: 10,
-    marginBottom: 20
+    justifyContent: "center"
   },
-  welcomeImage: {
-    width: 100,
-    height: 80,
-    resizeMode: "contain",
-    marginTop: 3,
-    marginLeft: -10
+  header: {
+    fontSize: 25
   },
-  getStartedContainer: {
-    alignItems: "center",
-    marginHorizontal: 50
-  },
-  homeScreenFilename: {
-    marginVertical: 7
-  },
-  codeHighlightText: {
-    color: "rgba(96,100,109, 0.8)"
-  },
-  codeHighlightContainer: {
-    backgroundColor: "rgba(0,0,0,0.05)",
-    borderRadius: 3,
-    paddingHorizontal: 4
-  },
-  bigProjectText: {
-    fontSize: 36,
-    textAlign: "center",
-    marginBottom: 50
-  },
-  getStartedText: {
-    fontSize: 18,
-    color: "rgba(96,100,109, 1)",
-    lineHeight: 24,
-    textAlign: "center"
-  },
-  tabBarInfoContainer: {
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    right: 0,
-    ...Platform.select({
-      ios: {
-        shadowColor: "black",
-        shadowOffset: { height: -3 },
-        shadowOpacity: 0.1,
-        shadowRadius: 3
-      },
-      android: {
-        elevation: 20
-      }
-    }),
-    alignItems: "center",
-    backgroundColor: "#fbfbfb",
-    paddingVertical: 20
-  },
-  tabBarInfoText: {
-    fontSize: 17,
-    color: "rgba(96,100,109, 1)",
-    textAlign: "center"
-  },
-  navigationFilename: {
-    marginTop: 5
-  },
-  helpContainer: {
+  image: {
     marginTop: 15,
-    alignItems: "center"
-  },
-  helpLink: {
-    paddingVertical: 15
-  },
-  helpLinkText: {
-    fontSize: 14,
-    color: "#2e78b7"
+    width: 150,
+    height: 150,
+    borderColor: "rgba(0,0,0,0.2)",
+    borderWidth: 3,
+    borderRadius: 150
   }
 });
