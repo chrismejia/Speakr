@@ -7,10 +7,12 @@ import {
 
 import TabBarIcon from "../components/TabBarIcon";
 import HomeScreen from "../screens/HomeScreen";
-// import LinksScreen from "../screens/LinksScreen";
-import GalleryScreen from "../screens/GalleryScreen";
-import SettingsScreen from "../screens/SettingsScreen";
 import CameraScreen from "../screens/CameraScreen";
+import LearningScreen from "../screens/LearningScreen";
+import StudyScreen from "../screens/StudyScreen";
+// import LinksScreen from "../screens/LinksScreen";
+// import GalleryScreen from "../screens/GalleryScreen";
+// import SettingsScreen from "../screens/StudyScreen";
 
 const HomeStack = createStackNavigator({
   Home: HomeScreen
@@ -30,29 +32,25 @@ HomeStack.navigationOptions = {
   )
 };
 
-const GalleryStack = createStackNavigator({
-  GalleryScreen: GalleryScreen
+export const LearningStack = createStackNavigator({
+  Learn: LearningScreen
 });
 
-GalleryStack.navigationOptions = {
-  tabBarLabel: "Gallery",
+LearningStack.navigationOptions = {
+  tabBarLabel: "Learn",
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}
-      name={
-        Platform.OS === "ios"
-          ? `ios-images${focused ? "" : "-outline"}`
-          : "md-images"
-      }
+      name={Platform.OS === "ios" ? `ios-book` : "md-book"}
     />
   )
 };
 
-const SettingsStack = createStackNavigator({
-  Settings: SettingsScreen
+const StudyStack = createStackNavigator({
+  Study: StudyScreen
 });
 
-SettingsStack.navigationOptions = {
+StudyStack.navigationOptions = {
   tabBarLabel: "Settings",
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
@@ -83,6 +81,6 @@ CameraStack.navigationOptions = {
 export default createBottomTabNavigator({
   HomeStack,
   CameraStack,
-  GalleryStack,
-  SettingsStack
+  LearningStack,
+  StudyStack
 });

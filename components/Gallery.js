@@ -8,18 +8,22 @@ import {
   ScrollView,
   Alert
 } from "react-native";
-import { FileSystem, ImageManipulator, MediaLibrary, Permissions } from "expo";
+import { FileSystem, ImageManipulator, Permissions } from "expo";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import Photo from "../components/Photo";
+import config from "../config.json";
+import LearningScreen from "../screens/LearningScreen";
 
 const PHOTOS_DIR = FileSystem.documentDirectory + "photos";
 
 export default class GalleryScreen extends React.Component {
   state = {
-    faces: {},
     images: {},
     photos: [],
-    selected: []
+    selected: [],
+    lastProcessedImage: "",
+    labels: {},
+    showLearnScreen: false
   };
 
   componentDidMount = async () => {
@@ -37,18 +41,69 @@ export default class GalleryScreen extends React.Component {
     this.setState({ selected });
   };
 
+  toggleView = () =>
+    this.setState({
+      showLearnScreen: !this.state.showLearnScreen
+    });
+
+  renderLearningScreen() {
+    return <LearningScreen onPress={this.toggleView.bind(this)} />;
+  }
+
   processImage = async imageUri => {
     try {
-      let processedImg = await ImageManipulator.manipulateAsync(
+      const processedImg = await ImageManipulator.manipulateAsync(
         imageUri,
         [{ resize: { width: 480, height: 640 } }],
         { format: "jpeg", base64: true }
       );
-      console.log("BELOW IS THE PROCESSED URI");
 
-      console.log(processedImg.uri);
+      // console.log("BELOW IS THE PROCESSED URI");
+      // console.log(processedImg.uri);
+      // console.log("BELOW IS THE PROCESSED base64");
+      // console.log(processedImg.base64);
+      this.setState({ lastProcessedImage: processedImg.base64 });
+      const irChecked = await this.checkForLabels(
+        this.state.lastProcessedImage
+      );
+      console.log("\n\nirChecked is:\n\n");
+      console.log(irChecked);
     } catch (error) {
       console.log("Image manipulation failed; logs below.");
+      console.log(error);
+    }
+  };
+
+  checkForLabels = async base64Image => {
+    try {
+      const labels = await fetch(
+        config.googleCloud.api + config.googleCloud.apiKey,
+        {
+          method: "POST",
+          body: JSON.stringify({
+            requests: [
+              {
+                image: {
+                  content: base64Image
+                },
+                features: [
+                  {
+                    type: "LABEL_DETECTION",
+                    maxResults: 10
+                  }
+                ]
+              }
+            ]
+          })
+        }
+      );
+      const labelsResponse = labels.json();
+      this.setState({ labels: labelsResponse });
+      return labelsResponse;
+    } catch (error) {
+      console.log(
+        "\n\nSomething went wrong with the image processing request.\n\n"
+      );
       console.log(error);
     }
   };
@@ -68,8 +123,6 @@ export default class GalleryScreen extends React.Component {
       if (status !== "granted") {
         throw new Error("Denied CAMERA_ROLL permissions!");
       }
-      console.log("This is photos:");
-      console.log(photos);
 
       const promises = photos.map(photoUri => {
         try {
@@ -81,7 +134,14 @@ export default class GalleryScreen extends React.Component {
       });
 
       await Promise.all(promises);
-      Alert.alert("Processing", "Your photo is processing. Please wait.");
+      Alert.alert("Processing", "Your photo is processing. Please wait.", [
+        {
+          text: "View Results",
+          onPress: () => {
+            this.renderLearningScreen();
+          }
+        }
+      ]);
     } else {
       Alert.alert(
         "No Photos Selected",
@@ -99,7 +159,7 @@ export default class GalleryScreen extends React.Component {
     />
   );
 
-  render() {
+  renderGallery() {
     return (
       <View style={styles.container}>
         <View style={styles.navbar}>
@@ -122,6 +182,12 @@ export default class GalleryScreen extends React.Component {
         </ScrollView>
       </View>
     );
+  }
+
+  render() {
+    return this.showLearnScreen
+      ? this.renderLearningScreen()
+      : this.renderGallery();
   }
 }
 
