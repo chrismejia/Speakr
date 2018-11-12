@@ -71,8 +71,8 @@ export default class Photo extends React.Component {
         <Image style={styles.picture} source={{ uri }} />
         {this.state.selected && (
           <MaterialCommunityIcons
-            name="plus-circle"
-            size={50}
+            name="file-upload"
+            size={75}
             color="springgreen"
           />
         )}
