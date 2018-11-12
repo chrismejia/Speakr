@@ -11,7 +11,7 @@ export default class LearningScreen extends React.Component {
     return (
       <ScrollView style={styles.container}>
         <Image
-          source={require("../assets/images/LearnPage.png")}
+          source={require("../assets/images/LPage4.png")}
           style={{
             width: 500,
             height: 2000,
