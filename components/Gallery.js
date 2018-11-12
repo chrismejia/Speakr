@@ -8,10 +8,11 @@ import {
   ScrollView,
   Alert
 } from "react-native";
-import { FileSystem, ImageManipulator, MediaLibrary, Permissions } from "expo";
+import { FileSystem, ImageManipulator, Permissions } from "expo";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import Photo from "../components/Photo";
 import config from "../config.json";
+import LearningScreen from "../screens/LearningScreen";
 
 const PHOTOS_DIR = FileSystem.documentDirectory + "photos";
 
@@ -21,7 +22,8 @@ export default class GalleryScreen extends React.Component {
     photos: [],
     selected: [],
     lastProcessedImage: "",
-    labels: {}
+    labels: {},
+    showLearnScreen: false
   };
 
   componentDidMount = async () => {
@@ -38,6 +40,15 @@ export default class GalleryScreen extends React.Component {
     }
     this.setState({ selected });
   };
+
+  toggleView = () =>
+    this.setState({
+      showLearnScreen: !this.state.showLearnScreen
+    });
+
+  renderLearningScreen() {
+    return <LearningScreen onPress={this.toggleView.bind(this)} />;
+  }
 
   processImage = async imageUri => {
     try {
@@ -78,7 +89,7 @@ export default class GalleryScreen extends React.Component {
                 features: [
                   {
                     type: "LABEL_DETECTION",
-                    maxResults: 5
+                    maxResults: 10
                   }
                 ]
               }
@@ -86,10 +97,8 @@ export default class GalleryScreen extends React.Component {
           })
         }
       );
-      labelsResponse = labels.json();
+      const labelsResponse = labels.json();
       this.setState({ labels: labelsResponse });
-      // console.log("\n\nthis.state.labels\n\n");
-      // console.log(this.state.labels);
       return labelsResponse;
     } catch (error) {
       console.log(
@@ -125,7 +134,14 @@ export default class GalleryScreen extends React.Component {
       });
 
       await Promise.all(promises);
-      Alert.alert("Processing", "Your photo is processing. Please wait.");
+      Alert.alert("Processing", "Your photo is processing. Please wait.", [
+        {
+          text: "View Results",
+          onPress: () => {
+            this.renderLearningScreen();
+          }
+        }
+      ]);
     } else {
       Alert.alert(
         "No Photos Selected",
@@ -143,7 +159,7 @@ export default class GalleryScreen extends React.Component {
     />
   );
 
-  render() {
+  renderGallery() {
     return (
       <View style={styles.container}>
         <View style={styles.navbar}>
@@ -166,6 +182,12 @@ export default class GalleryScreen extends React.Component {
         </ScrollView>
       </View>
     );
+  }
+
+  render() {
+    return this.showLearnScreen
+      ? this.renderLearningScreen()
+      : this.renderGallery();
   }
 }
 

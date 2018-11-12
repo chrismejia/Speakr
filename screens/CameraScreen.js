@@ -15,7 +15,7 @@ import {
   Slider,
   Platform
 } from "react-native";
-import GalleryScreen from "./GalleryScreen";
+import GalleryScreen from "../components/Gallery";
 // import isIPhoneX from "react-native-is-iphonex";
 
 import {
