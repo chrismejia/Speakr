@@ -8,13 +8,7 @@ import {
   ScrollView,
   Alert
 } from "react-native";
-import {
-  FileSystem,
-  FaceDetector,
-  MediaLibrary,
-  Permissions,
-  ImageManipulator
-} from "expo";
+import { FileSystem, ImageManipulator, MediaLibrary, Permissions } from "expo";
 import { MaterialIcons } from "@expo/vector-icons";
 import Photo from "../components/Photo";
 
@@ -31,7 +25,6 @@ export default class GalleryScreen extends React.Component {
   componentDidMount = async () => {
     const photos = await FileSystem.readDirectoryAsync(PHOTOS_DIR);
     this.setState({ photos });
-    // console.log(this.state.photos)
   };
 
   toggleSelection = (uri, isSelected) => {
@@ -42,6 +35,21 @@ export default class GalleryScreen extends React.Component {
       selected = selected.filter(item => item !== uri);
     }
     this.setState({ selected });
+  };
+
+  processImage = async imageUri => {
+    try {
+      let processedImg = await ImageManipulator.manipulateAsync(
+        imageUri,
+        [{ resize: { width: 480, height: 640 } }],
+        { format: "jpeg", base64: true }
+      );
+      console.log("BELOW IS THE PROCESSED IMG");
+      console.log(processedImg);
+    } catch (error) {
+      console.log("Image manipulation failed; logs below.");
+      console.log(error);
+    }
   };
 
   saveToGallery = async () => {
@@ -58,14 +66,21 @@ export default class GalleryScreen extends React.Component {
       console.log(photos);
 
       const promises = photos.map(photoUri => {
-        ImageManipulator.manipulate(photoUri, []);
-        return MediaLibrary.createAssetAsync(photoUri);
+        try {
+          const processedImg = this.processImage(photoUri);
+          console.log("PROCESSED URI here");
+          console.log(processedImg.uri);
+          // return MediaLibrary.createAssetAsync(photoUri);
+        } catch (error) {
+          console.log(error);
+        }
       });
 
       const numOfPhotos = promises.length;
 
       await Promise.all(promises);
-      alert(
+      Alert.alert(
+        "Saved",
         numOfPhotos > 1
           ? `${numOfPhotos} photos saved to your gallery!`
           : `${numOfPhotos} photo saved to your gallery!`
