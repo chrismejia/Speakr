@@ -1,5 +1,6 @@
 import React from "react";
 import {
+  Font,
   Image,
   Platform,
   ScrollView,
@@ -13,9 +14,33 @@ import { WebBrowser } from "expo";
 import { MonoText } from "../components/StyledText";
 
 export default class HomeScreen extends React.Component {
-  static navigationOptions = {
-    header: null
-  };
+  state = { fontLoaded: false };
+
+  static navigationOptions = { header: null };
+
+  // To reattempt later
+  /*
+███████╗ ██████╗ ███╗   ██╗████████╗
+██╔════╝██╔═══██╗████╗  ██║╚══██╔══╝
+█████╗  ██║   ██║██╔██╗ ██║   ██║
+██╔══╝  ██║   ██║██║╚██╗██║   ██║
+██║     ╚██████╔╝██║ ╚████║   ██║
+╚═╝      ╚═════╝ ╚═╝  ╚═══╝   ╚═╝
+  */
+  // componentDidMount() {
+  //   (async () => {
+  //     try {
+  //       console.log("Loading font...");
+  //       await Font.loadAsync({
+  //         "Cheetah Kick": require("../assets/fonts/CheetahKick.otf")
+  //       });
+  //       console.log("Font loaded.");
+  //       this.setState({ fontLoaded: true });
+  //     } catch (e) {
+  //       console.log(e);
+  //     }
+  //   })();
+  // }
 
   render() {
     return (
@@ -34,12 +59,27 @@ export default class HomeScreen extends React.Component {
               style={styles.welcomeImage}
             />
           </View>
+          <View>
+            <Text>Speakr</Text>
 
+            {/*
+███████╗ ██████╗ ███╗   ██╗████████╗
+██╔════╝██╔═══██╗████╗  ██║╚══██╔══╝
+█████╗  ██║   ██║██╔██╗ ██║   ██║
+██╔══╝  ██║   ██║██║╚██╗██║   ██║
+██║     ╚██████╔╝██║ ╚████║   ██║
+╚═╝      ╚═════╝ ╚═╝  ╚═══╝   ╚═╝
+ */}
+
+            {/*this.state.fontLoaded ? (
+              <Text style={{ fontFamily: "Cheetah Kick", fontSize: 56 }}>
+                Speakr
+              </Text>
+            ) : (
+              <Text>Font not loaded</Text>
+            )*/}
+          </View>
           <View style={styles.getStartedContainer}>
-            <Text style={styles.bigProjectText}>
-              Building with Expo camera from scratch.
-            </Text>
-
             {this._maybeRenderDevelopmentModeWarning()}
 
             <Text style={styles.getStartedText}>Get started by opening</Text>

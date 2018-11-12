@@ -1,10 +1,4 @@
-import {
-  Constants,
-  Camera,
-  FileSystem,
-  Permissions,
-  BarCodeScanner
-} from "expo";
+import { Constants, Camera, FileSystem, Permissions } from "expo";
 import React from "react";
 import {
   Alert,
@@ -77,13 +71,10 @@ export default class CameraScreen extends React.Component {
     showGallery: false,
     showMoreOptions: false
   };
-  static navigationOptions = { header: null };
 
   async componentWillMount() {
     const { status } = await Permissions.askAsync(Permissions.CAMERA);
-    this.setState({
-      permissionsGranted: status === "granted"
-    });
+    this.setState({ permissionsGranted: status === "granted" });
   }
 
   componentDidMount() {
@@ -100,37 +91,24 @@ export default class CameraScreen extends React.Component {
   };
 
   toggleView = () =>
-    this.setState({
-      showGallery: !this.state.showGallery,
-      newPhotos: false
-    });
+    this.setState({ showGallery: !this.state.showGallery, newPhotos: false });
 
   toggleMoreOptions = () =>
-    this.setState({
-      showMoreOptions: !this.state.showMoreOptions
-    });
+    this.setState({ showMoreOptions: !this.state.showMoreOptions });
 
   toggleFacing = () =>
-    this.setState({
-      type: this.state.type === "back" ? "front" : "back"
-    });
+    this.setState({ type: this.state.type === "back" ? "front" : "back" });
 
   toggleFlash = () =>
-    this.setState({
-      flash: flashModeOrder[this.state.flash]
-    });
+    this.setState({ flash: flashModeOrder[this.state.flash] });
 
   setRatio = ratio => this.setState({ ratio });
 
   toggleWB = () =>
-    this.setState({
-      whiteBalance: wbOrder[this.state.whiteBalance]
-    });
+    this.setState({ whiteBalance: wbOrder[this.state.whiteBalance] });
 
   toggleFocus = () =>
-    this.setState({
-      autoFocus: this.state.autoFocus === "on" ? "off" : "on"
-    });
+    this.setState({ autoFocus: this.state.autoFocus === "on" ? "off" : "on" });
 
   zoomOut = () =>
     this.setState({
@@ -142,29 +120,15 @@ export default class CameraScreen extends React.Component {
       zoom: this.state.zoom + 0.1 > 1 ? 1 : this.state.zoom + 0.1
     });
 
-  setFocusDepth = depth =>
-    this.setState({
-      depth
-    });
+  setFocusDepth = depth => this.setState({ depth });
 
   takePicture = () => {
     if (this.camera) {
-      this.camera.takePictureAsync({
-        onPictureSaved: this.onPictureSaved
-      });
+      this.camera.takePictureAsync({ onPictureSaved: this.onPictureSaved });
     }
   };
 
   handleMountError = ({ message }) => console.error(message);
-
-  onPictureSaved = async photo => {
-    await FileSystem.moveAsync({
-      from: photo.uri,
-      to: `${FileSystem.documentDirectory}photos/${Date.now()}.jpg`
-    });
-    console.log(photo);
-    this.setState({ newPhotos: true });
-  };
 
   collectPictureSizes = async () => {
     if (this.camera) {
@@ -202,14 +166,7 @@ export default class CameraScreen extends React.Component {
       pictureSizeId: newId
     });
   };
-  /*
- ██████╗  █████╗ ██╗     ██╗     ███████╗██████╗ ██╗   ██╗
-██╔════╝ ██╔══██╗██║     ██║     ██╔════╝██╔══██╗╚██╗ ██╔╝
-██║  ███╗███████║██║     ██║     █████╗  ██████╔╝ ╚████╔╝
-██║   ██║██╔══██║██║     ██║     ██╔══╝  ██╔══██╗  ╚██╔╝
-╚██████╔╝██║  ██║███████╗███████╗███████╗██║  ██║   ██║
- ╚═════╝ ╚═╝  ╚═╝╚══════╝╚══════╝╚══════╝╚═╝  ╚═╝   ╚═╝
-  */
+
   renderGallery() {
     return <GalleryScreen onPress={this.toggleView.bind(this)} />;
   }
@@ -245,9 +202,7 @@ export default class CameraScreen extends React.Component {
         <Text
           style={[
             styles.autoFocusLabel,
-            {
-              color: this.state.autoFocus === "on" ? "white" : "#6b6b6b"
-            }
+            { color: this.state.autoFocus === "on" ? "white" : "#6b6b6b" }
           ]}
         >
           AF
@@ -262,19 +217,19 @@ export default class CameraScreen extends React.Component {
         style={styles.bottomButton}
         onPress={this.toggleMoreOptions}
       >
-        <MaterialIcons name="photo-size-select-large" size={40} color="white" />
+        <Octicons name="kebab-horizontal" size={30} color="white" />
       </TouchableOpacity>
       <View style={{ flex: 0.4 }}>
         <TouchableOpacity
           onPress={this.takePicture}
           style={{ alignSelf: "center" }}
         >
-          <Ionicons name="ios-radio-button-on" size={85} color="white" />
+          <Ionicons name="ios-radio-button-on" size={80} color="white" />
         </TouchableOpacity>
       </View>
       <TouchableOpacity style={styles.bottomButton} onPress={this.toggleView}>
         <View>
-          <Ionicons name="md-images" size={40} color="white" />
+          <Foundation name="thumbnails" size={30} color="white" />
           {this.state.newPhotos && <View style={styles.newPhotosDot} />}
         </View>
       </TouchableOpacity>
@@ -284,22 +239,22 @@ export default class CameraScreen extends React.Component {
   renderMoreOptions = () => (
     <View style={styles.options}>
       <View style={styles.pictureSizeContainer}>
-        <Text style={styles.pictureQualityLabel}>Resolution</Text>
+        <Text style={styles.pictureQualityLabel}>Picture quality</Text>
         <View style={styles.pictureSizeChooser}>
           <TouchableOpacity
             onPress={this.previousPictureSize}
-            style={{ paddingLeft: 6, paddingRight: 6 }}
+            style={{ padding: 6 }}
           >
-            <Ionicons name="md-arrow-dropleft" size={24} color="white" />
+            <Ionicons name="md-arrow-dropleft" size={14} color="white" />
           </TouchableOpacity>
           <View style={styles.pictureSizeLabel}>
             <Text style={{ color: "white" }}>{this.state.pictureSize}</Text>
           </View>
           <TouchableOpacity
             onPress={this.nextPictureSize}
-            style={{ paddingLeft: 6, paddingRight: 6 }}
+            style={{ padding: 6 }}
           >
-            <Ionicons name="md-arrow-dropright" size={24} color="white" />
+            <Ionicons name="md-arrow-dropright" size={14} color="white" />
           </TouchableOpacity>
         </View>
       </View>
@@ -322,25 +277,10 @@ export default class CameraScreen extends React.Component {
         ratio={this.state.ratio}
         pictureSize={this.state.pictureSize}
         onMountError={this.handleMountError}
-        onFacesDetected={
-          this.state.faceDetecting ? this.onFacesDetected : undefined
-        }
-        onFaceDetectionError={this.onFaceDetectionError}
-        barCodeScannerSettings={{
-          barCodeTypes: [
-            BarCodeScanner.Constants.BarCodeType.qr,
-            BarCodeScanner.Constants.BarCodeType.pdf417
-          ]
-        }}
-        onBarCodeScanned={
-          this.state.barcodeScanning ? this.onBarCodeScanned : undefined
-        }
       >
         {this.renderTopBar()}
         {this.renderBottomBar()}
       </Camera>
-      {this.state.faceDetecting && this.renderFaces()}
-      {this.state.faceDetecting && this.renderLandmarks()}
       {this.state.showMoreOptions && this.renderMoreOptions()}
     </View>
   );
@@ -375,7 +315,7 @@ const styles = StyleSheet.create({
   bottomBar: {
     paddingBottom: 5,
     backgroundColor: "transparent",
-    alignSelf: "center",
+    alignSelf: "flex-end",
     justifyContent: "space-between",
     flex: 0.12,
     flexDirection: "row"
@@ -407,6 +347,7 @@ const styles = StyleSheet.create({
   },
   bottomButton: {
     flex: 0.3,
+    height: 58,
     justifyContent: "center",
     alignItems: "center"
   },
@@ -414,33 +355,37 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 0,
     right: -5,
-    width: 16,
-    height: 16,
+    width: 8,
+    height: 8,
     borderRadius: 4,
-    backgroundColor: "springgreen"
+    backgroundColor: "#4630EB"
   },
   options: {
-    flex: 1,
     position: "absolute",
-    bottom: 100,
-    left: 15,
-    width: 150,
-    height: 80,
+    bottom: 80,
+    left: 30,
+    width: 200,
+    height: 160,
     backgroundColor: "#000000BA",
-    borderRadius: 10,
+    borderRadius: 4,
     padding: 10
   },
-  pictureQualityLabel: {
-    flex: 1,
-    fontSize: 16,
-    color: "white",
+  detectors: {
+    flex: 0.5,
+    justifyContent: "space-around",
+    alignItems: "center",
     flexDirection: "row"
   },
+  pictureQualityLabel: {
+    fontSize: 10,
+    marginVertical: 3,
+    color: "white"
+  },
   pictureSizeContainer: {
-    flex: 1,
+    flex: 0.5,
     alignItems: "center",
-    justifyContent: "center",
-    flexDirection: "row"
+    paddingTop: 10,
+    borderRadius: 15
   },
   pictureSizeChooser: {
     alignItems: "center",
@@ -451,6 +396,35 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center"
+  },
+  facesContainer: {
+    position: "absolute",
+    bottom: 0,
+    right: 0,
+    left: 0,
+    top: 0
+  },
+  face: {
+    padding: 10,
+    borderWidth: 2,
+    borderRadius: 2,
+    position: "absolute",
+    borderColor: "#FFD700",
+    justifyContent: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)"
+  },
+  landmark: {
+    width: landmarkSize,
+    height: landmarkSize,
+    position: "absolute",
+    backgroundColor: "red"
+  },
+  faceText: {
+    color: "#FFD700",
+    fontWeight: "bold",
+    textAlign: "center",
+    margin: 10,
+    backgroundColor: "transparent"
   },
   row: {
     flexDirection: "row"
