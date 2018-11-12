@@ -2,61 +2,61 @@
   {
     "engWord": "cell phone",
     "spaWord": "cellular",
-    "picture": "./images/cellphone.jpg",
+    "picture": "../assets/images/cellphone.jpg",
     "date": "06/10/2018"
   },
   {
     "engWord": "computer",
     "spaWord": "computador",
-    "picture": "./images/computer.jpeg",
+    "picture": "../assets/images/computer.jpeg",
     "date": "07/27/2018"
   },
   {
     "engWord": "car",
     "spaWord": "carro",
-    "picture": "./images/car.jog",
+    "picture": "../assets/images/car.jog",
     "date": "06/05/2018"
   },
   {
     "engWord": "house",
     "spaWord": "casa",
-    "picture": "./images/house.jpg",
+    "picture": "../assets/images/house.jpg",
     "date": "05/08/2018"
   },
   {
     "engWord": "shoes",
     "spaWord": "zapatos",
-    "picture": "./images/shoes.jpg",
+    "picture": "../assets/images/shoes.jpg",
     "date": "09/26/2018"
   },
   {
     "engWord": "keys",
     "spaWord": "llaves",
-    "picture": "./images/keys.jpg",
+    "picture": "../assets/images/keys.jpg",
     "date": "09/04/2018"
   },
   {
     "engWord": "wallet",
     "spaWord": "billetera",
-    "picture": "./images/moneyclip.png",
+    "picture": "../assets/images/moneyclip.png",
     "date": "02/07/2018"
   },
   {
     "engWord": "beer",
     "spaWord": "cerveza",
-    "picture": "./images/beer.jpg",
+    "picture": "../assets/images/beer.jpg",
     "date": "03/27/2018"
   },
   {
     "engWord": "books",
     "spaWord": "libros",
-    "picture": "./images/books.jpg",
+    "picture": "../assets/images/books.jpg",
     "date": "07/15/2018"
   },
   {
     "engWord": "headphones",
     "spaWord": "audifonos",
-    "picture": "./images/headphones.jpg",
+    "picture": "../assets/images/headphones.jpg",
     "date": "05/10/2018"
   }
 ]

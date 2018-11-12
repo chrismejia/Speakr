@@ -12,6 +12,8 @@ export default class App extends React.Component {
       photoUrl: ""
     };
   }
+
+  static navigationOptions = { header: null };
   signIn = async () => {
     try {
       const result = await Google.logInAsync({
@@ -35,6 +37,11 @@ export default class App extends React.Component {
   render() {
     return (
       <View style={styles.container}>
+        <Image
+          source={require("../assets/images/Speakr.png")}
+          style={{ width: 500, height: 300, resizeMode: "contain" }}
+        />
+
         {this.state.signedIn ? (
           <LoggedInPage name={this.state.name} photoUrl={this.state.photoUrl} />
         ) : (
@@ -48,7 +55,6 @@ export default class App extends React.Component {
 const LoginPage = props => {
   return (
     <View>
-      <Text style={styles.header}>Sign In With Google</Text>
       <Button title="Sign in with Google" onPress={() => props.signIn()} />
     </View>
   );
