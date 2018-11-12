@@ -11,66 +11,10 @@ export default class LearningScreen extends React.Component {
     return (
       <ScrollView style={styles.container}>
         <Image
-          source={require("../assets/images/car.jpg")}
+          source={require("../assets/images/LearnPage.png")}
           style={{
-            width: 350,
-            height: 350,
-            resizeMode: "contain"
-          }}
-        />
-        <Image
-          source={require("../assets/images/car.jpg")}
-          style={{
-            width: 300,
-            height: 300,
-            resizeMode: "contain"
-          }}
-        />
-        <Image
-          source={require("../assets/images/car.jpg")}
-          style={{
-            width: 300,
-            height: 300,
-            resizeMode: "contain"
-          }}
-        />
-        <Image
-          source={require("../assets/images/car.jpg")}
-          style={{
-            width: 300,
-            height: 300,
-            resizeMode: "contain"
-          }}
-        />
-        <Image
-          source={require("../assets/images/car.jpg")}
-          style={{
-            width: 300,
-            height: 300,
-            resizeMode: "contain"
-          }}
-        />
-        <Image
-          source={require("../assets/images/car.jpg")}
-          style={{
-            width: 300,
-            height: 300,
-            resizeMode: "contain"
-          }}
-        />
-        <Image
-          source={require("../assets/images/car.jpg")}
-          style={{
-            width: 300,
-            height: 300,
-            resizeMode: "contain"
-          }}
-        />
-        <Image
-          source={require("../assets/images/car.jpg")}
-          style={{
-            width: 300,
-            height: 300,
+            width: 500,
+            height: 2000,
             resizeMode: "contain"
           }}
         />
