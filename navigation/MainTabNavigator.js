@@ -23,6 +23,7 @@ HomeStack.navigationOptions = {
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}
+      style={{ color: "#fbb036" }}
       name={
         Platform.OS === "ios"
           ? `ios-information-circle${focused ? "" : "-outline"}`
@@ -42,6 +43,7 @@ LearningStack.navigationOptions = {
     <TabBarIcon
       focused={focused}
       name={Platform.OS === "ios" ? `ios-list-box` : "md-list-box"}
+      style={{ color: "#fbb036" }}
     />
   )
 };
@@ -56,6 +58,7 @@ StudyStack.navigationOptions = {
     <TabBarIcon
       focused={focused}
       name={Platform.OS === "ios" ? `ios-book` : "md-book"}
+      style={{ color: "#fbb036" }}
     />
   )
 };
@@ -65,10 +68,11 @@ const CameraStack = createStackNavigator({
 });
 
 CameraStack.navigationOptions = {
-  tabBarLabel: "Camera",
+  tabBarLabel: "Snap",
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}
+      style={{ color: "#fbb036" }}
       name={
         Platform.OS === "ios"
           ? `ios-camera${focused ? "" : "-outline"}`

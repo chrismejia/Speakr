@@ -55,7 +55,11 @@ export default class App extends React.Component {
 const LoginPage = props => {
   return (
     <View>
-      <Button title="Sign in with Google" onPress={() => props.signIn()} />
+      <Button
+        title="Sign in with Google"
+        color="#fbb03b"
+        onPress={() => props.signIn()}
+      />
     </View>
   );
 };
@@ -74,7 +78,8 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     alignItems: "center",
-    justifyContent: "center"
+    justifyContent: "center",
+    color: "black"
   },
   header: {
     fontSize: 25

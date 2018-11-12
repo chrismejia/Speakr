@@ -8,11 +8,11 @@
     "platforms": ["ios", "android"],
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/Speakr-icon.png",
     "splash": {
-      "image": "./assets/images/splash.png",
+      "image": "./assets/images/Speakr-splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#fbb03b"
     },
     "updates": {
       "fallbackToCacheTimeout": 0

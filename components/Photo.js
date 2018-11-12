@@ -71,7 +71,7 @@ export default class Photo extends React.Component {
           <MaterialCommunityIcons
             name="file-upload"
             size={75}
-            color="springgreen"
+            color="#fbb03b"
           />
         )}
       </TouchableOpacity>

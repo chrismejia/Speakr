@@ -417,7 +417,7 @@ const styles = StyleSheet.create({
     width: 16,
     height: 16,
     borderRadius: 4,
-    backgroundColor: "springgreen"
+    backgroundColor: "#fbb03b"
   },
   options: {
     flex: 1,
