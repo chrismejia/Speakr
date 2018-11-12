@@ -11,15 +11,17 @@ import {
 import { FileSystem, ImageManipulator, MediaLibrary, Permissions } from "expo";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import Photo from "../components/Photo";
+import config from "../config.json";
 
 const PHOTOS_DIR = FileSystem.documentDirectory + "photos";
 
 export default class GalleryScreen extends React.Component {
   state = {
-    faces: {},
     images: {},
     photos: [],
-    selected: []
+    selected: [],
+    lastProcessedImage: "",
+    labels: {}
   };
 
   componentDidMount = async () => {
@@ -39,16 +41,60 @@ export default class GalleryScreen extends React.Component {
 
   processImage = async imageUri => {
     try {
-      let processedImg = await ImageManipulator.manipulateAsync(
+      const processedImg = await ImageManipulator.manipulateAsync(
         imageUri,
         [{ resize: { width: 480, height: 640 } }],
         { format: "jpeg", base64: true }
       );
-      console.log("BELOW IS THE PROCESSED URI");
 
-      console.log(processedImg.uri);
+      // console.log("BELOW IS THE PROCESSED URI");
+      // console.log(processedImg.uri);
+      // console.log("BELOW IS THE PROCESSED base64");
+      // console.log(processedImg.base64);
+      this.setState({ lastProcessedImage: processedImg.base64 });
+      const irChecked = await this.checkForLabels(
+        this.state.lastProcessedImage
+      );
+      console.log("\n\nirChecked is:\n\n");
+      console.log(irChecked);
     } catch (error) {
       console.log("Image manipulation failed; logs below.");
+      console.log(error);
+    }
+  };
+
+  checkForLabels = async base64Image => {
+    try {
+      const labels = await fetch(
+        config.googleCloud.api + config.googleCloud.apiKey,
+        {
+          method: "POST",
+          body: JSON.stringify({
+            requests: [
+              {
+                image: {
+                  content: base64Image
+                },
+                features: [
+                  {
+                    type: "LABEL_DETECTION",
+                    maxResults: 5
+                  }
+                ]
+              }
+            ]
+          })
+        }
+      );
+      labelsResponse = labels.json();
+      this.setState({ labels: labelsResponse });
+      // console.log("\n\nthis.state.labels\n\n");
+      // console.log(this.state.labels);
+      return labelsResponse;
+    } catch (error) {
+      console.log(
+        "\n\nSomething went wrong with the image processing request.\n\n"
+      );
       console.log(error);
     }
   };
@@ -68,8 +114,6 @@ export default class GalleryScreen extends React.Component {
       if (status !== "granted") {
         throw new Error("Denied CAMERA_ROLL permissions!");
       }
-      console.log("This is photos:");
-      console.log(photos);
 
       const promises = photos.map(photoUri => {
         try {
