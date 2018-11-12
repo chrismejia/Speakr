@@ -9,7 +9,7 @@ import {
   Alert
 } from "react-native";
 import { FileSystem, ImageManipulator, MediaLibrary, Permissions } from "expo";
-import { MaterialIcons } from "@expo/vector-icons";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import Photo from "../components/Photo";
 
 const PHOTOS_DIR = FileSystem.documentDirectory + "photos";
@@ -44,8 +44,9 @@ export default class GalleryScreen extends React.Component {
         [{ resize: { width: 480, height: 640 } }],
         { format: "jpeg", base64: true }
       );
-      console.log("BELOW IS THE PROCESSED IMG");
-      console.log(processedImg);
+      console.log("BELOW IS THE PROCESSED URI");
+
+      console.log(processedImg.uri);
     } catch (error) {
       console.log("Image manipulation failed; logs below.");
       console.log(error);
@@ -56,7 +57,12 @@ export default class GalleryScreen extends React.Component {
     const photos = this.state.selected;
 
     // Whenever there are photos selected...
-    if (photos.length > 0) {
+    if (photos.length > 1) {
+      Alert.alert(
+        "Too many photos" /* Title */,
+        "Please select only one photo for processing." /* Message */
+      );
+    } else if (photos.length === 1) {
       const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
 
       if (status !== "granted") {
@@ -67,28 +73,19 @@ export default class GalleryScreen extends React.Component {
 
       const promises = photos.map(photoUri => {
         try {
-          const processedImg = this.processImage(photoUri);
-          console.log("PROCESSED URI here");
-          console.log(processedImg.uri);
+          this.processImage(photoUri);
           // return MediaLibrary.createAssetAsync(photoUri);
         } catch (error) {
           console.log(error);
         }
       });
 
-      const numOfPhotos = promises.length;
-
       await Promise.all(promises);
-      Alert.alert(
-        "Saved",
-        numOfPhotos > 1
-          ? `${numOfPhotos} photos saved to your gallery!`
-          : `${numOfPhotos} photo saved to your gallery!`
-      );
+      Alert.alert("Processing", "Your photo is processing. Please wait.");
     } else {
-      alert(
+      Alert.alert(
         "No Photos Selected",
-        "Please tap to select the photo(s) you'd like to save locally to your device."
+        "Please tap to select the photo you'd like to process."
       );
     }
   };
@@ -107,13 +104,15 @@ export default class GalleryScreen extends React.Component {
       <View style={styles.container}>
         <View style={styles.navbar}>
           <TouchableOpacity style={styles.button} onPress={this.props.onPress}>
-            <MaterialIcons name="arrow-back" size={30} color="black" />
+            <MaterialCommunityIcons name="arrow-left" size={30} color="black" />
           </TouchableOpacity>
+          <Text style={styles.gallerySave}>Choose 1 for Processing</Text>
           <TouchableOpacity style={styles.button} onPress={this.saveToGallery}>
-            <Text style={styles.gallerySave}>
-              {/* <MaterialIcons name="save" size={30} color="black" /> */}
-              Process & Save
-            </Text>
+            <MaterialCommunityIcons
+              name="file-upload"
+              size={30}
+              color="black"
+            />
           </TouchableOpacity>
         </View>
         <ScrollView contentComponentStyle={{ flex: 1 }}>
@@ -135,7 +134,7 @@ const styles = StyleSheet.create({
   navbar: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
+    justifyContent: "center",
     backgroundColor: "springgreen"
   },
   pictures: {
@@ -148,6 +147,7 @@ const styles = StyleSheet.create({
     padding: 20
   },
   gallerySave: {
+    flex: 1,
     alignItems: "center",
     fontSize: 20,
     color: "black"
